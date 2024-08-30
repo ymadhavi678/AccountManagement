@@ -1,0 +1,140 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountManagement\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3B04A74B-6F62-40FC-9500-FDF04B8F37DA}|..\\AccountMgmt\\WebAPI.csproj|c:\\users\\ymadh\\source\\repos\\accountmanagement\\accountmgmt\\controllers\\transactionscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B04A74B-6F62-40FC-9500-FDF04B8F37DA}|..\\AccountMgmt\\WebAPI.csproj|c:\\users\\ymadh\\source\\repos\\accountmanagement\\accountmgmt\\entities\\transaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B04A74B-6F62-40FC-9500-FDF04B8F37DA}|..\\AccountMgmt\\WebAPI.csproj|c:\\users\\ymadh\\source\\repos\\accountmanagement\\accountmgmt\\entities\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B04A74B-6F62-40FC-9500-FDF04B8F37DA}|..\\AccountMgmt\\WebAPI.csproj|c:\\users\\ymadh\\source\\repos\\accountmanagement\\accountmgmt\\db scripts\\sqlobjectsschema.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B04A74B-6F62-40FC-9500-FDF04B8F37DA}|..\\AccountMgmt\\WebAPI.csproj|c:\\users\\ymadh\\source\\repos\\accountmanagement\\accountmgmt\\controllers\\authenticationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{261C1D2C-B052-4CD3-8968-56580CA422F8}|..\\AccountMgmtUI\\UserInterface.csproj|c:\\users\\ymadh\\source\\repos\\accountmanagement\\accountmgmtui\\pages\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B04A74B-6F62-40FC-9500-FDF04B8F37DA}|..\\AccountMgmt\\WebAPI.csproj|c:\\users\\ymadh\\source\\repos\\accountmanagement\\accountmgmt\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B04A74B-6F62-40FC-9500-FDF04B8F37DA}|..\\AccountMgmt\\WebAPI.csproj|c:\\users\\ymadh\\source\\repos\\accountmanagement\\accountmgmt\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TransactionsController.cs",
+              "DocumentMoniker": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\Controllers\\TransactionsController.cs",
+              "RelativeDocumentMoniker": "..\\AccountMgmt\\Controllers\\TransactionsController.cs",
+              "ToolTip": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\Controllers\\TransactionsController.cs",
+              "RelativeToolTip": "..\\AccountMgmt\\Controllers\\TransactionsController.cs",
+              "ViewState": "AgIAADIAAAAAAAAAAAAEwEsAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-30T15:12:52.407Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Transaction.cs",
+              "DocumentMoniker": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\Entities\\Transaction.cs",
+              "RelativeDocumentMoniker": "..\\AccountMgmt\\Entities\\Transaction.cs",
+              "ToolTip": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\Entities\\Transaction.cs",
+              "RelativeToolTip": "..\\AccountMgmt\\Entities\\Transaction.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-30T15:12:41.357Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Account.cs",
+              "DocumentMoniker": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\Entities\\Account.cs",
+              "RelativeDocumentMoniker": "..\\AccountMgmt\\Entities\\Account.cs",
+              "ToolTip": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\Entities\\Account.cs",
+              "RelativeToolTip": "..\\AccountMgmt\\Entities\\Account.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-30T15:12:34.36Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "SQLObjectsSchema.sql",
+              "DocumentMoniker": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\DB Scripts\\SQLObjectsSchema.sql",
+              "RelativeDocumentMoniker": "..\\AccountMgmt\\DB Scripts\\SQLObjectsSchema.sql",
+              "ToolTip": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\DB Scripts\\SQLObjectsSchema.sql",
+              "RelativeToolTip": "..\\AccountMgmt\\DB Scripts\\SQLObjectsSchema.sql",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2024-08-30T15:11:18.74Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AuthenticationController.cs",
+              "DocumentMoniker": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\Controllers\\AuthenticationController.cs",
+              "RelativeDocumentMoniker": "..\\AccountMgmt\\Controllers\\AuthenticationController.cs",
+              "ToolTip": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\Controllers\\AuthenticationController.cs",
+              "RelativeToolTip": "..\\AccountMgmt\\Controllers\\AuthenticationController.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAvwB4AAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-30T15:08:41.161Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmtUI\\Pages\\Login.cshtml",
+              "RelativeDocumentMoniker": "..\\AccountMgmtUI\\Pages\\Login.cshtml",
+              "ToolTip": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmtUI\\Pages\\Login.cshtml",
+              "RelativeToolTip": "..\\AccountMgmtUI\\Pages\\Login.cshtml",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAAAwAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-08-30T15:07:04.81Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\Program.cs",
+              "RelativeDocumentMoniker": "..\\AccountMgmt\\Program.cs",
+              "ToolTip": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\Program.cs",
+              "RelativeToolTip": "..\\AccountMgmt\\Program.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAsAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-30T15:04:21.024Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\appsettings.json",
+              "RelativeDocumentMoniker": "..\\AccountMgmt\\appsettings.json",
+              "ToolTip": "C:\\Users\\ymadh\\source\\repos\\AccountManagement\\AccountMgmt\\appsettings.json",
+              "RelativeToolTip": "..\\AccountMgmt\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-08-30T15:04:00.379Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
