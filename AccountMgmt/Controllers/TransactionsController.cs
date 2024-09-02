@@ -14,10 +14,9 @@ namespace TransactionAPI.Controllers
     public class TransactionsController : ControllerBase
     {
         private readonly ITransactionRepository _transactionRepository;
-        // Replace these values with your actual key and IV
-        private static readonly byte[] Key = Encoding.UTF8.GetBytes("0123456789abcdef0123456789abcdef"); // 32 bytes for AES-256
-        private static readonly byte[] Iv = Encoding.UTF8.GetBytes("abcdef0123456789");
-        // 16 bytes for AES
+        
+        string keyBase64 = "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY="; // Replace with the actual key in Base64
+        string ivBase64 = "YWJjZGVmMDEyMzQ1Njc4OQ=="; // Replace with the actual IV in Base64
 
         public TransactionsController(ITransactionRepository transactionRepository)
         {
@@ -28,17 +27,14 @@ namespace TransactionAPI.Controllers
         public async Task<IActionResult> TransferMoney([FromBody] EncryptedDataRequest request)
         {
             // Decrypt the data
-            var decryptedData = DecryptStringFromBytes_Aes(Convert.FromBase64String(request.EncryptedData), Key, Iv);
+            var decryptedData = Decrypt(request.EncryptedData, keyBase64, ivBase64);
 
             // Process the decrypted data (e.g., parse JSON)
-            var formData = Newtonsoft.Json.JsonConvert.DeserializeObject<TransferRequest>(decryptedData);
+            var formData = decryptedData.Split('-').ToArray<string>();
 
-            // Log or process the form data
-            Console.WriteLine($"Recipient Account: {formData.RecipientAccount}");
-            Console.WriteLine($"Amount: {formData.TransferAmount}");
-            Console.WriteLine($"Description: {formData.TransferDescription}");
+            
 
-            var result = await _transactionRepository.TransferMoneyAsync(formData.FromAccountId, formData.RecipientAccount, formData.TransferAmount);
+            var result = await _transactionRepository.TransferMoneyAsync(Convert.ToInt64(formData[0].ToString()), Convert.ToInt64(formData[1].ToString()), Convert.ToDecimal(formData[2].ToString()), formData[3]?.ToString());
 
             if (!result)
             {
@@ -50,36 +46,59 @@ namespace TransactionAPI.Controllers
 
 
 
-        // Method to decrypt string using AES
-        private static string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] key, byte[] iv)
+
+        public static string Decrypt(string encryptedDataBase64, string keyBase64, string ivBase64)
         {
-            using Aes aes = Aes.Create();
-            aes.Key = key;
-            aes.IV = iv;
+            // Convert the Base64 strings to byte arrays
+            byte[] encryptedData = Convert.FromBase64String(encryptedDataBase64);
+            byte[] key = Convert.FromBase64String(keyBase64);
+            byte[] iv = Convert.FromBase64String(ivBase64);
 
-            aes.Padding = PaddingMode.PKCS7;
-
-            ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-
-            using (MemoryStream ms = new MemoryStream(cipherText))
+            // Ensure that the key and IV have the correct lengths
+            if (key.Length != 32)
             {
-                using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-                {
-                    using (StreamReader sr = new StreamReader(cs))
-                    {
-                        try
-                        {
-                            return sr.ReadToEnd();
-                        }
-                        catch (Exception e)
-                        {
-                            return "";
-                        }
+                throw new ArgumentException("Invalid key length. Key must be 32 bytes (256 bits).");
+            }
+            if (iv.Length != 16)
+            {
+                throw new ArgumentException("Invalid IV length. IV must be 16 bytes (128 bits).");
+            }
 
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = key;
+                aes.IV = iv;
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.None; // We'll handle the padding manually
+
+                using (ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
+                {
+                    using (MemoryStream ms = new MemoryStream(encryptedData))
+                    {
+                        using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                        {
+                            // Decrypt the data
+                            byte[] decryptedData = new byte[encryptedData.Length];
+                            int decryptedBytesCount = cs.Read(decryptedData, 0, decryptedData.Length);
+
+                            // Remove PKCS7 padding
+                            int paddingLength = decryptedData[decryptedBytesCount - 1];
+                            byte[] unpaddedData = new byte[decryptedBytesCount - paddingLength];
+                            Array.Copy(decryptedData, unpaddedData, unpaddedData.Length);
+
+                            // Convert decrypted byte array to string
+                            return Encoding.UTF8.GetString(unpaddedData);
+                        }
                     }
                 }
             }
         }
+
+
+
+
+
+
     }
 
     public class TransferRequest
