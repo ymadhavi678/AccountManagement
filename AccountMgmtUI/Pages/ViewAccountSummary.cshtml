@@ -91,7 +91,80 @@
 </div>
 
 <script>
+ 
     $(document).ready(function () {
+
+        // Utility function to convert a string to an ArrayBuffer
+        async function strToArrayBuffer(str) {
+            const encoder = new TextEncoder();
+            return encoder.encode(str);
+        }
+
+        // Utility function to convert an ArrayBuffer to a base64 string
+        function arrayBufferToBase64(buffer) {
+            let binary = '';
+            const bytes = new Uint8Array(buffer);
+            const len = bytes.byteLength;
+            for (let i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
+
+        // Function to add PKCS7 padding
+        function pkcs7Pad(buffer) {
+            const blockSize = 16;
+            const paddingRequired = blockSize - (buffer.byteLength % blockSize);
+            const paddedLength = buffer.byteLength + paddingRequired;
+            const paddedArray = new Uint8Array(paddedLength);
+            paddedArray.set(new Uint8Array(buffer));
+            paddedArray.fill(paddingRequired, buffer.byteLength);
+            return paddedArray;
+        }
+
+        // Convert base64 string to Uint8Array
+        function base64ToUint8Array(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes;
+        }
+
+        // Encrypt function
+        async function encryptData(data, keyBase64, ivBase64) {
+            const keyBuffer = base64ToUint8Array(keyBase64);
+            const ivBuffer = base64ToUint8Array(ivBase64);
+
+            // Ensure IV is exactly 16 bytes
+            if (ivBuffer.length !== 16) {
+                throw new Error("IV length is incorrect. IV must be exactly 16 bytes.");
+            }
+
+            const key = await crypto.subtle.importKey(
+                'raw',
+                keyBuffer,
+                'AES-CBC',
+                false,
+                ['encrypt']
+            );
+
+            const dataBuffer = await strToArrayBuffer(data);
+            const paddedData = pkcs7Pad(dataBuffer);
+            const encryptedBuffer = await crypto.subtle.encrypt(
+                {
+                    name: 'AES-CBC',
+                    iv: ivBuffer
+                },
+                key,
+                paddedData
+            );
+
+            return arrayBufferToBase64(encryptedBuffer);
+        }
+
         // Handle form submission
         $('#transferForm').on('submit', function (event) {
             event.preventDefault(); // Prevent form submission and page reload
@@ -127,41 +200,43 @@
                 return; // Prevent form submission if validation fails
             }
 
-            // Encrypt form data
-            var key = CryptoJS.enc.Hex.parse('0123456789abcdef0123456789abcdef'); // Use your own key from API, for now hardcoded here
-            var iv = CryptoJS.enc.Hex.parse('abcdef0123456789abcdef0123456789'); // Use your own IV from API, for now hardcoded here
+            // Sample Base64-encoded key and IV (replace these with actual values from your API)
+            var keyBase64 = 'MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY='; // base64 encoded key
+            var ivBase64 = 'YWJjZGVmMDEyMzQ1Njc4OQ=='; // base64 encoded IV (should decode to 16 bytes)
 
-            var encryptedData = CryptoJS.AES.encrypt(
-                JSON.stringify({
-                    fromAccount: fromAccount,
-                    recipientAccount: recipientAccount,
-                    transferAmount: transferAmount,
-                    transferDescription: transferDescription
-                }),
-                key,
-                { iv: iv }
-            ).toString();
+            const sampledata = fromAccount + '-' + recipientAccount + '-' + transferAmount + '-' + transferDescription +'-Closing';
 
-            // Prepare data for API call
-            var data = {
-                encryptedData: encryptedData
-            };
+            encryptData(sampledata, keyBase64, ivBase64).then(encryptedData => {
+                console.log('Encrypted Data (base64):', encryptedData);
 
-            // Make AJAX call
-            $.ajax({
-                url: 'http://localhost:5049/api/Transactions/transfer',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                success: function (response) {
-                    $('#alertContainer').html('<div class="alert alert-success">Transfer successful!</div>');
-                },
-                error: function (xhr, status, error) {
-                    $('#alertContainer').html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
-                }
+                // Prepare data for API call
+                var data = {
+                    EncryptedData: encryptedData
+                };
+
+                // Make AJAX call
+                $.ajax({
+                    url: 'http://localhost:5049/api/Transactions/transfer',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        $('#alertContainer').html('<div class="alert alert-success">Transfer successful!</div>');
+                    },
+                    error: function (xhr, status, error) {
+                        $('#alertContainer').html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+                    }
+                });
+            }).catch(error => {
+                console.error('Encryption failed:', error);
+                $('#alertContainer').html('<div class="alert alert-danger">An error occurred during encryption.</div>');
             });
         });
     });
+
+
+
+
 </script>
 
 <!-- Include jQuery -->

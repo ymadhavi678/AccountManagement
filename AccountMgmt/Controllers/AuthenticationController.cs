@@ -28,7 +28,7 @@ public class AuthenticationController : ControllerBase
        var decryptedUsername = Decrypt(request.UserId);
        var decryptedPassword = Decrypt(request.password);
 
-        var token = await _loginService.SignInAsync(decryptedUsername, decryptedPassword);
+        var token = await _loginService.SignInAsync("decryptedUsername", "decryptedPassword");
         return Ok(new LoginResponse { Token = token });
     }
 

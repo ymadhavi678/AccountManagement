@@ -1,6 +1,6 @@
 USE [Learning]
 GO
-/****** Object:  Table [dbo].[Accounts]    Script Date: 30-08-2024 10:47:55 ******/
+/****** Object:  Table [dbo].[Accounts]    Script Date: 02-09-2024 21:59:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -14,7 +14,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Transactions]    Script Date: 30-08-2024 10:47:55 ******/
+/****** Object:  Table [dbo].[Transactions]    Script Date: 02-09-2024 21:59:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -25,6 +25,7 @@ CREATE TABLE [dbo].[Transactions](
 	[ToAccountId] [bigint] NOT NULL,
 	[Amount] [decimal](18, 2) NOT NULL,
 	[Timestamp] [datetime] NULL,
+	[TransactionDescription] [nvarchar](255) NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -39,68 +40,80 @@ GO
 ALTER TABLE [dbo].[Transactions]  WITH CHECK ADD FOREIGN KEY([ToAccountId])
 REFERENCES [dbo].[Accounts] ([Id])
 GO
-/****** Object:  StoredProcedure [dbo].[TransferMoney]    Script Date: 30-08-2024 10:47:55 ******/
+/****** Object:  StoredProcedure [dbo].[TransferMoney]    Script Date: 02-09-2024 21:59:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-
 CREATE PROCEDURE [dbo].[TransferMoney]
     @FromAccountId BIGINT,
     @ToAccountId BIGINT,
     @Amount DECIMAL(18, 2),
-    @Description NVARCHAR(MAX) = NULL
+    @TransactionDescription NVARCHAR(255) = NULL  -- Optional parameter
 AS
 BEGIN
     SET NOCOUNT ON;
 
     BEGIN TRY
-        -- Check if accounts exist
-        IF NOT EXISTS (SELECT 1 FROM Accounts WHERE Id = @FromAccountId)
-            THROW 50000, 'From account not found.', 1;
-        
-        IF NOT EXISTS (SELECT 1 FROM Accounts WHERE Id = @ToAccountId)
-            THROW 50000, 'To account not found.', 1;
-        
-        -- Check if the FromAccount has sufficient funds
-        DECLARE @CurrentBalance DECIMAL(18, 2);
-        
-        SELECT @CurrentBalance = Balance
-        FROM Accounts
-        WHERE Id = @FromAccountId;
-        
-        IF @CurrentBalance < @Amount
-            THROW 50000, 'Insufficient funds.', 1;
-        
-        -- Begin transaction
+        -- Start a transaction
         BEGIN TRANSACTION;
-        
-        -- Deduct amount from FromAccount
-        UPDATE Accounts
+
+        -- Check if the FromAccount has enough balance
+        DECLARE @FromAccountBalance DECIMAL(18, 2);
+
+        SELECT @FromAccountBalance = Balance
+        FROM [dbo].[Accounts]
+        WHERE Id = @FromAccountId;
+
+        IF @FromAccountBalance IS NULL
+        BEGIN
+            RAISERROR('FromAccount does not exist.', 16, 1);
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END
+
+        IF @FromAccountBalance < @Amount
+        BEGIN
+            RAISERROR('Insufficient funds in FromAccount.', 16, 1);
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END
+
+        -- Deduct the amount from the FromAccount
+        UPDATE [dbo].[Accounts]
         SET Balance = Balance - @Amount
         WHERE Id = @FromAccountId;
 
-        -- Add amount to ToAccount
-        UPDATE Accounts
+        -- Add the amount to the ToAccount
+        UPDATE [dbo].[Accounts]
         SET Balance = Balance + @Amount
         WHERE Id = @ToAccountId;
 
-        -- Insert transaction record
-        INSERT INTO Transactions (FromAccountId, ToAccountId, Amount, Timestamp)
-        VALUES (@FromAccountId, @ToAccountId, @Amount, GETUTCDATE());
+        -- Insert the transaction record with optional TransactionDescription
+        INSERT INTO [dbo].[Transactions] (FromAccountId, ToAccountId, Amount, TransactionDescription)
+        VALUES (@FromAccountId, @ToAccountId, @Amount, @TransactionDescription);
 
-        -- Commit transaction
+        -- Commit the transaction
         COMMIT TRANSACTION;
-        
-        SELECT 'Transfer successful' AS Message;
+
+        PRINT 'Transfer successful.';
     END TRY
     BEGIN CATCH
-        -- Rollback transaction in case of error
+        -- Rollback the transaction if an error occurs
         IF @@TRANCOUNT > 0
+        BEGIN
             ROLLBACK TRANSACTION;
-        
-        -- Rethrow error
-        THROW;
-    END CATCH;
-END;
+        END
+
+        -- Capture the error information
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+
+        -- Raise the error using RAISERROR
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END
 GO
